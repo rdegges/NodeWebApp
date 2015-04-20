@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('client-sessions');
 var stormpath = require('express-stormpath');
 
 var app = express();
@@ -14,6 +15,13 @@ var stormpathMiddleware = stormpath.init(app, {
   enableForgotPassword: true
 });
 
+var sessionMiddleware = session({
+  cookieName: 'session',
+  secret: 'blahblah',
+  duration: 24 * 60 * 60 * 1000  // make sessions last for 1 day (in milliseconds)
+});
+
+app.use(sessionMiddleware);
 app.use(stormpathMiddleware);
 app.use('/profile',require('./profile')());
 
